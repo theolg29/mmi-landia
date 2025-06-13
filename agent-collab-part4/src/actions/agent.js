@@ -1,4 +1,6 @@
 import { getAIClient } from '@/lib/openai'
+import { $messages } from '@/store/messages'
+import { useStore } from '@nanostores/react'
 import { isEmpty } from 'lodash'
 
 // function générateur : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator
@@ -28,6 +30,7 @@ export const onAgent = async function ({
   agent = {},
   prompt,
   canStream = true,
+  canThink = false,
   contextInputs = [],
 }) {
   const aiClient = await getAIClient()
@@ -39,6 +42,7 @@ export const onAgent = async function ({
   console.log('onAgent agent', agent)
   console.log('onAgent prompt', prompt)
 
+
   agent.role = `${agent.role}
                 Respond in the same language of the user.
                 Be to the point, and do not add any fluff.`
@@ -49,6 +53,10 @@ export const onAgent = async function ({
 
   if (agent.response_format === 'json') {
     agent.role += '\n Ouput: json \n  ```json ... ```'
+  }
+
+  if (!canThink) {
+    agent.role += '\n no_think'
   }
 
   try {
