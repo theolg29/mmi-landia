@@ -13,7 +13,7 @@ const PromptContainer = styled(Flex, {
   width: '100%',
   padding: '12px 18px',
   borderRadius: '18px',
-  background: 'var(--accent-2)',
+  border: '1px solid#dedede',
 })
 
 const PromptArea = styled(TextArea, {
@@ -51,7 +51,6 @@ function ChatPrompt() {
     const prompt = promptRef.current.value
     console.log('onSendPrompt', prompt)
 
-    
 
     addMessage({
       role: 'user',
@@ -59,10 +58,8 @@ function ChatPrompt() {
       id: Math.random().toString(),
     })
 
-
     const messages = $messages.get();
     const contextInputs = constructCtxArray(messages)
-
 
     // AI response
     const response = {
@@ -140,12 +137,13 @@ function ChatPrompt() {
 
     promptRef.current.value = ''
     setIsPromptEmpty(true)
+
   }
 
   return (
     <Flex
       justify='center'
-      mt='auto'
+      mt='18px'
       width='100%'>
       <PromptContainer
         align='center'
@@ -166,20 +164,10 @@ function ChatPrompt() {
           }}
         />
         <Flex
-          justify='start'
-          align='center'
+          justify='between'
           width='100%'>
-          <Flex
-            justify='start'
-            align='center'
-            width='100%'>
             <AgentMenu></AgentMenu>
             <AgentSelect></AgentSelect>
-          </Flex>
-        </Flex>
-        <Flex
-          justify='end'
-          width='100%'>
           <Button
             disabled={isPromptEmpty}
             onClick={onSendPrompt}>

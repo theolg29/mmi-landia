@@ -4,7 +4,7 @@ import { Link } from 'raviger'
 
 export function Header() {
   return (
-    <Flex style={{ boxShadow: 'var(--shadow-3)', height: 42, width: '100vw' }}>
+    <Flex style={{ height: 42, width: '100vw', borderBottom: '1px solid#dedede' }}>
       <Flex
         justify='between'
         align='center'
@@ -14,13 +14,10 @@ export function Header() {
         px='5'>
         <Flex gap='6'>
           <Link href='/'>
-            <RocketIcon
-              height='22'
-              width='22'
-            />
+            <p>LandIA</p>
           </Link>
         </Flex>
-
+        <a href="/agents">Mes Agents</a>
         <Flex
           justify='center'
           align='center'

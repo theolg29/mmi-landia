@@ -8,31 +8,49 @@ function ChatList() {
 
   return (
     <Flex
-      direction='column'
-      gap='2'
-      style={{ height: 'calc(100vh - 200px)', overflowY: 'auto' }}>
+      direction="column"
+      gap="3"
+      style={{
+        height: 'calc(100vh - 200px)',
+        overflowY: 'auto',
+        padding: '16px',
+        borderRadius: '8px',
+      }}
+    >
       {messages.map((msg) => (
-        <Flex key={`message-${msg.id}`}>
+        <Flex
+          key={`message-${msg.id}`}
+          direction="row"
+          align="start"
+          style={{
+            marginBottom: '12px',
+          }}
+        >
           {msg.role === 'assistant' ? (
             <Flex
+              direction="row"
+              align="center"
               style={{
-                background: 'var(--accent-5)',
-                padding: '4px 8px',
-                borderRadius: 18,
-              }}>
-              <Box>🤖</Box>
-
+                padding: '8px 12px',
+                borderRadius: '8px',
+                maxWidth: '70%',
+              }}
+            >
+              <Box style={{ marginRight: '8px' }}>🤖</Box>
               <Markdown content={msg.content || ''} />
             </Flex>
           ) : (
             <Flex
+              direction="row"
+              align="top"
               style={{
-                background: 'var(--accent-a3)',
-                padding: '4px 8px',
-                borderRadius: 18,
-                marginLeft: 24,
-              }}>
-              <Box>😀</Box>
+                padding: '8px 12px',
+                borderRadius: '8px',
+                maxWidth: '70%',
+                marginLeft: 'auto',
+              }}
+            >
+              <Box style={{ marginRight: '8px' }}>😀</Box>
               <Markdown content={msg.content || ''} />
             </Flex>
           )}

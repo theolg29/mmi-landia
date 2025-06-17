@@ -14,12 +14,9 @@ function AgentList() {
   const selectedAgent = useStore($selectedAgentId)
 
   return (
-    <Box
-      width='100%'
-      height='100%'
+    <Flex
       style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(auto-fill, minmax(182px, 1fr))`,
+        flexDirection: 'column',
         alignContent: 'flex-start',
         gap: 10,
         padding: 0,
@@ -87,7 +84,7 @@ function AgentList() {
           </Flex>
         </Card>
       ))}
-    </Box>
+    </Flex>
   )
 }
 

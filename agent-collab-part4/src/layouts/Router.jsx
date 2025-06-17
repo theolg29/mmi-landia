@@ -1,11 +1,15 @@
 import { usePath, useRoutes } from 'raviger'
 import { useEffect, useState } from 'react'
 import LayoutTheme from './LayoutTheme'
+import Landia from '@/pages/Landia'
 import Home from '@/pages/Home'
 import { Button } from '@radix-ui/themes'
+import Agent from '@/features/agent/Agent'
 
 const routes = {
-  '/': () => <Home />,
+  // '/': () => <Home />,
+  '/': () => <Landia />,
+  '/agents': () => <Agent />,
   '/count': () => <Counter param1='azrlkazjrzaj' />,
 }
 

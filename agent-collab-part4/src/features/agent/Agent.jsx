@@ -8,10 +8,7 @@ function Agent() {
   const selectedAgentId = useStore($selectedAgentId)
   return (
     <Flex
-      gap='4'
-      p='2'
-      width='100%'
-      height='100%'>
+      p='2'>
       <AgentList />
 
       {selectedAgentId && (
