@@ -8,6 +8,7 @@ import { AgentMenu } from './AgentMenu'
 import { AgentSelect } from './AgentSelect'
 import { useStore } from '@nanostores/react'
 import { isEmpty } from 'lodash'
+import { extractJSXString } from '@/lib/json'
 
 const PromptContainer = styled(Flex, {
   width: '100%',
@@ -40,7 +41,7 @@ function ChatPrompt() {
   const [isPromptEmpty, setIsPromptEmpty] = useState(true)
 
   const chatAgents = useStore($chatAgents)
- // const messages = useStore($messages)
+  // const messages = useStore($messages)
 
   const onTextChange = () => {
     const val = promptRef.current.value || ''
@@ -51,14 +52,13 @@ function ChatPrompt() {
     const prompt = promptRef.current.value
     console.log('onSendPrompt', prompt)
 
-
     addMessage({
       role: 'user',
       content: prompt,
       id: Math.random().toString(),
     })
 
-    const messages = $messages.get();
+    const messages = $messages.get()
     const contextInputs = constructCtxArray(messages)
 
     // AI response
@@ -89,26 +89,26 @@ function ChatPrompt() {
     for (let i = 0, len = steps.length; i < len; i++) {
       const agent = steps[i]
 
-      console.log("agent :", agent)
+      console.log('agent :', agent)
       let cloned = $messages.get()
 
       // call agent
       const stream = await onAgent({ prompt: prompt, agent, contextInputs })
-      
+
       //
       for await (const part of stream) {
         const token = part.choices[0]?.delta?.content || ''
 
         const last = cloned.at(-1)
-        
+
         cloned[cloned.length - 1] = {
           ...last,
           content: last.content + token,
+          agentId: agent?.id,
         }
 
         updateMessages([...cloned])
       } // end generation
-    
 
       const last = cloned.at(-1)
 
@@ -128,6 +128,12 @@ function ChatPrompt() {
             completed: false,
           },
         ]
+      } else {
+        cloned[cloned.length - 1] = {
+          ...cloned[cloned.length - 1],
+          content: extractJSXString(last.content),
+        }
+        console.log('extract JSX', cloned.at(-1))
       }
 
       updateMessages([...cloned])
@@ -137,7 +143,6 @@ function ChatPrompt() {
 
     promptRef.current.value = ''
     setIsPromptEmpty(true)
-
   }
 
   return (
@@ -166,8 +171,8 @@ function ChatPrompt() {
         <Flex
           justify='between'
           width='100%'>
-            <AgentMenu></AgentMenu>
-            <AgentSelect></AgentSelect>
+          <AgentMenu></AgentMenu>
+          <AgentSelect></AgentSelect>
           <Button
             disabled={isPromptEmpty}
             onClick={onSendPrompt}>

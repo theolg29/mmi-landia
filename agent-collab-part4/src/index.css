@@ -13,6 +13,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  overflow-y: hidden;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -56,11 +60,12 @@ button:focus-visible {
 
 /* HTML: <div class="loader"></div> */
 .loader {
-  width: 5px;
+  width: 8px;
+  height: 8px;
   padding: 4px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: #25b09b;
+  background: #3e63dd;
   --_m: 
     conic-gradient(#0000 10%,#000),
     linear-gradient(#000 0 0) content-box;

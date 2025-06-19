@@ -17,3 +17,8 @@ Agent 3 : Optimiseur SEO
 Agent 4 : Export HTML / CSS = Fournit un export de la page en HTML CSS pour obtenir un aperçu
 
 ## Réflexion / conclusion
+
+
+# TASKS :
+- Store avec les settings
+- Génération du code propre sans les balises think et le markdwon
