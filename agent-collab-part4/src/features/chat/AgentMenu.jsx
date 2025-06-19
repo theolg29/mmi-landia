@@ -79,10 +79,11 @@ export function AgentMenu() {
         <Flex
           gap='3'
           mt='4'
+          align='center'
           justify='end'>
           <Dialog.Close>
             <Button
-              variant='soft'
+              variant='ghost'
               color='gray'>
               Fermer
             </Button>

@@ -17,6 +17,10 @@ function Preview() {
     return agent && agent.title === 'Développeur Frontend'
   }
 
+  const hasCompletedFrontendMessage = messages.some(
+    (msg) => isFromFrontendDeveloper(msg) && msg.completed,
+  )
+
   // Temps de réflexion
   useEffect(() => {
     let interval
@@ -31,7 +35,7 @@ function Preview() {
   return (
     <Flex direction='column'>
       <Box>
-        {messages.length !== 0 && (
+        {messages.length !== 0 && !hasCompletedFrontendMessage && (
           <>
             <Flex
               width='100%'
@@ -62,11 +66,20 @@ function Preview() {
                   code={msg.content}
                   noInline>
                   <Flex direction='column'>
-                    {msg.completed && <LiveEditor />}
-                    <Box style={{ padding: '8px', backgroundColor: 'grey' }}>
+                    <Box>
+                      <h4>Code</h4>
+                      <Separator
+                        size='4'
+                        style={{ marginBottom: '18px' }}
+                      />
+                      {msg.completed && <LiveEditor />}
+                    </Box>
+                    <Box style={{ marginTop: '18px' }}>
+                      <h4>Prévisualisation</h4>
+                      <Separator size='4' />
                       {msg.completed && <LivePreview />}
                     </Box>
-                    <LiveError />
+                    {msg.completed && <LiveError />}
                   </Flex>
                 </LiveProvider>
               </Flex>

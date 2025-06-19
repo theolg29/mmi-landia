@@ -1,5 +1,4 @@
 import { onAgent } from '@/actions/agent'
-import { styled } from '@/lib/stitches'
 import { $chatAgents, $messages, addMessage, updateMessages } from '@/store/store'
 import { PaperPlaneIcon } from '@radix-ui/react-icons'
 import { Button, Flex, TextArea } from '@radix-ui/themes'
@@ -9,24 +8,6 @@ import { AgentSelect } from './AgentSelect'
 import { useStore } from '@nanostores/react'
 import { isEmpty } from 'lodash'
 import { extractJSXString } from '@/lib/json'
-
-const PromptContainer = styled(Flex, {
-  width: '100%',
-  padding: '12px 18px',
-  borderRadius: '18px',
-  border: '1px solid#dedede',
-})
-
-const PromptArea = styled(TextArea, {
-  width: '100%',
-  boxShadow: 'none',
-  outline: 'none',
-  background: 'none',
-  '& textarea': {
-    fontSize: '1.1rem',
-    fontWeight: 450,
-  },
-})
 
 function constructCtxArray(originalArray) {
   const result = []
@@ -38,7 +19,9 @@ function constructCtxArray(originalArray) {
 
 function ChatPrompt() {
   const promptRef = useRef(null)
+  const containerRef = useRef(null)
   const [isPromptEmpty, setIsPromptEmpty] = useState(true)
+  const [isFocused, setIsFocused] = useState(false)
 
   const chatAgents = useStore($chatAgents)
   // const messages = useStore($messages)
@@ -48,9 +31,27 @@ function ChatPrompt() {
     setIsPromptEmpty(val.trim().length === 0)
   }
 
+  const onFocus = () => {
+    setIsFocused(true)
+  }
+
+  const onBlur = (e) => {
+    if (containerRef.current && containerRef.current.contains(e.relatedTarget)) {
+      return
+    }
+    setIsFocused(false)
+  }
+
+  const onOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      setIsFocused(false)
+    }
+  }
+
   const onSendPrompt = async () => {
     const prompt = promptRef.current.value
     console.log('onSendPrompt', prompt)
+    setIsFocused(false)
 
     addMessage({
       role: 'user',
@@ -146,41 +147,52 @@ function ChatPrompt() {
   }
 
   return (
-    <Flex
-      justify='center'
-      mt='18px'
-      width='100%'>
-      <PromptContainer
-        align='center'
-        direction='column'>
-        <PromptArea
-          ref={promptRef}
-          id='Todo'
-          placeholder='Comment puis-je aider...'
-          onChange={onTextChange}
-          onKeyDown={(e) => {
-            const canSend = !isPromptEmpty && e.key === 'Enter'
-            const mod = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey
-            if (canSend && !mod) {
-              // Prevent default behavior of Enter key
-              e.preventDefault()
-              onSendPrompt()
-            }
-          }}
-        />
+    <>
+      <div
+        className={`blur-overlay ${isFocused ? 'visible' : ''}`}
+        onClick={onOverlayClick}
+      />
+      <Flex
+        justify='center'
+        mt='18px'
+        width='100%'>
         <Flex
-          justify='between'
-          width='100%'>
-          <AgentMenu></AgentMenu>
-          <AgentSelect></AgentSelect>
-          <Button
-            disabled={isPromptEmpty}
-            onClick={onSendPrompt}>
-            <PaperPlaneIcon />
-          </Button>
+          ref={containerRef}
+          align='center'
+          direction='column'
+          className={`prompt-container ${isFocused ? 'focused' : ''}`}>
+          <TextArea
+            ref={promptRef}
+            id='Todo'
+            placeholder='Comment puis-je aider...'
+            onChange={onTextChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            className={`prompt-area ${isFocused ? 'expanded' : ''}`}
+            onKeyDown={(e) => {
+              const canSend = !isPromptEmpty && e.key === 'Enter'
+              const mod = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey
+              if (canSend && !mod) {
+                // Prevent default behavior of Enter key
+                e.preventDefault()
+                onSendPrompt()
+              }
+            }}
+          />
+          <Flex
+            justify='between'
+            width='100%'>
+            <AgentMenu />
+            <AgentSelect />
+            <Button
+              disabled={isPromptEmpty}
+              onClick={onSendPrompt}>
+              <PaperPlaneIcon />
+            </Button>
+          </Flex>
         </Flex>
-      </PromptContainer>
-    </Flex>
+      </Flex>
+    </>
   )
 }
 

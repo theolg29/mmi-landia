@@ -90,3 +90,85 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Chat Prompt Styles */
+.prompt-container {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 18px;
+  border: 1px solid #dedede;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1000;
+  transform-origin: center bottom;
+}
+
+.prompt-container.focused {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.05);
+  width: 90%;
+  max-width: 600px;
+  background-color: white;
+}
+
+/* Animation d'entrée depuis le bas */
+@keyframes slideUpScale {
+  0% {
+    transform: translate(-50%, 20%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 1;
+  }
+}
+
+.prompt-container.focused {
+  animation: slideUpScale 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.prompt-area {
+  width: 100%;
+  box-shadow: none !important;
+  outline: none !important;
+  background: none !important;
+  border: none !important;
+  transition: height 0.3s ease;
+  resize: none;
+  height: 60px;
+}
+
+.prompt-area.expanded {
+  height: 200px;
+}
+
+.prompt-area textarea {
+  font-size: 1rem;
+  font-weight: 450;
+  resize: none;
+}
+
+.blur-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.blur-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.prism-code {
+  width: 100%;
+}
