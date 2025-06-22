@@ -43,7 +43,9 @@ function SortableAgent({ agent, onRemove }) {
       style={style}
       {...attributes}
       {...listeners}>
-      <Text size='1'>{agent.title}</Text>
+      <Text size='1'>
+        {agent.emoji} {agent.title}
+      </Text>
       <IconButton
         variant='ghost'
         size='1'

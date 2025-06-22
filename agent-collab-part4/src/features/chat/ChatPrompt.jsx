@@ -1,13 +1,22 @@
 import { onAgent } from '@/actions/agent'
-import { $chatAgents, $messages, addMessage, updateMessages } from '@/store/store'
+import {
+  $chatAgents,
+  $messages,
+  addMessage,
+  updateMessages,
+  $theme,
+  $layout,
+  $objectif,
+} from '@/store/store'
 import { PaperPlaneIcon } from '@radix-ui/react-icons'
-import { Button, Flex, TextArea } from '@radix-ui/themes'
+import { Button, Flex, TextArea, Box } from '@radix-ui/themes'
 import { useRef, useState } from 'react'
 import { AgentMenu } from './AgentMenu'
 import { AgentSelect } from './AgentSelect'
 import { useStore } from '@nanostores/react'
 import { isEmpty } from 'lodash'
 import { extractJSXString } from '@/lib/json'
+import { lpFewShots } from '@/utils/prompt'
 
 function constructCtxArray(originalArray) {
   const result = []
@@ -17,6 +26,12 @@ function constructCtxArray(originalArray) {
   return result
 }
 
+// Questions fréquentes
+const frequentQuestions = [
+  'Crée moi une fausse Landing Page',
+  'Donne moi du CSS dans le balise style={{ }}',
+]
+
 function ChatPrompt() {
   const promptRef = useRef(null)
   const containerRef = useRef(null)
@@ -24,7 +39,6 @@ function ChatPrompt() {
   const [isFocused, setIsFocused] = useState(false)
 
   const chatAgents = useStore($chatAgents)
-  // const messages = useStore($messages)
 
   const onTextChange = () => {
     const val = promptRef.current.value || ''
@@ -48,8 +62,27 @@ function ChatPrompt() {
     }
   }
 
+  const onQuestionClick = (question) => {
+    if (promptRef.current) {
+      promptRef.current.value = question
+      setIsPromptEmpty(false)
+      promptRef.current.focus()
+    }
+  }
+
   const onSendPrompt = async () => {
-    const prompt = promptRef.current.value
+    let prompt = promptRef.current.value
+
+    // Surcharge prompt settings
+
+    const theme = $theme.get()
+    const layout = $layout.get()
+    const objectif = $objectif.get()
+
+    prompt =
+      prompt +
+      `\n \n Je souhaite que ma landing page à un thème ${theme}, mon layout sera de ${layout} et l'objectif de cette page sera de ${objectif}`
+
     console.log('onSendPrompt', prompt)
     setIsFocused(false)
 
@@ -92,6 +125,10 @@ function ChatPrompt() {
 
       console.log('agent :', agent)
       let cloned = $messages.get()
+
+      if (agent.title === 'Développeur Frontend') {
+        prompt = prompt + `\n ${lpFewShots}`
+      }
 
       // call agent
       const stream = await onAgent({ prompt: prompt, agent, contextInputs })
@@ -155,7 +192,33 @@ function ChatPrompt() {
       <Flex
         justify='center'
         mt='18px'
-        width='100%'>
+        width='100%'
+        direction='column'
+        align='center'>
+        {/* Questions fréquentes */}
+        <Flex
+          direction='column'
+          gap='2'
+          mb='4'
+          width='100%'>
+          <Flex
+            wrap='wrap'
+            gap='2'>
+            {frequentQuestions.map((question, index) => (
+              <Button
+                key={index}
+                variant='soft'
+                size='1'
+                onClick={() => onQuestionClick(question)}
+                style={{
+                  cursor: 'pointer',
+                }}>
+                {question}
+              </Button>
+            ))}
+          </Flex>
+        </Flex>
+
         <Flex
           ref={containerRef}
           align='center'

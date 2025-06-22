@@ -1,11 +1,15 @@
 import { Flex, RadioGroup, Separator, Text, Heading, Box } from '@radix-ui/themes'
 import { useStore } from '@nanostores/react'
-import { $settings } from '@/store/store'
+import { $settings, setUserSettings } from '@/store/store'
 import { LoopIcon, PlusIcon } from '@radix-ui/react-icons'
 
 function Settings() {
   const settings = useStore($settings)
   const settingsKeys = Object.keys(settings)
+
+  const handleChange = (category, value) => {
+    setUserSettings(category, value)
+  }
 
   return (
     <Flex
@@ -24,7 +28,8 @@ function Settings() {
             <Separator size='4' />
             <RadioGroup.Root
               defaultValue='1'
-              name='example'>
+              name='example'
+              onValueChange={(val) => handleChange(category, val)}>
               {settings[category].choices.map((choice) => (
                 <Flex
                   asChild
@@ -44,21 +49,6 @@ function Settings() {
             </RadioGroup.Root>
           </Flex>
         ))}
-        <Flex
-          align='center'
-          gap='4'
-          style={{
-            marginTop: '18px',
-            cursor: 'pointer',
-            width: 'fit-content',
-            backgroundColor: '#535bf2',
-            padding: '6px 12px 6px 12px',
-            borderRadius: '100px',
-            color: '#fff',
-          }}>
-          <LoopIcon />
-          <p style={{ margin: '0' }}>Régéner ma page</p>
-        </Flex>
       </Box>
       <Flex
         align='center'
@@ -70,7 +60,8 @@ function Settings() {
           padding: '12px',
           borderRadius: '12px',
           color: '#fff',
-        }}>
+        }}
+        onClick={() => window.location.reload()}>
         <PlusIcon />
         <p style={{ margin: '0' }}>Nouveau chat</p>
       </Flex>

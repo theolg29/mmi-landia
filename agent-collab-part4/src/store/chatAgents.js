@@ -1,7 +1,7 @@
 import { atom, computed } from 'nanostores'
 import { $agents } from './agents'
 
-export const $selectedChatAgents = atom([])
+export const $selectedChatAgents = atom(['1', '2', '3', '4'])
 
 export const $chatAgents = computed([$selectedChatAgents, $agents], (ids, agents) => {
   // return agents.filter((e) => ids.includes(e.id))

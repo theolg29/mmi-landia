@@ -5,7 +5,7 @@ export const $selectedAgentId = atom('')
 
 export const $agents = atom([
   {
-    id: Math.random().toString(),
+    id: '1',
     emoji: '😀',
     title: 'Spécialiste UX',
     role: 'Détecte les mots clés les plus pertinents pour title et la meta description',
@@ -15,7 +15,7 @@ export const $agents = atom([
       'Identifie les mots clés les plus pertinents pour l’optimisation SEO',
   },
   {
-    id: Math.random().toString(),
+    id: '2',
     emoji: '🤠',
     title: 'Expert en Rédaction',
     role: 'Critique les différents mots clés choisis',
@@ -25,7 +25,7 @@ export const $agents = atom([
       'Fournit des critiques constructives sur les mots clés sélectionnés',
   },
   {
-    id: Math.random().toString(),
+    id: '3',
     emoji: '🤠',
     title: 'Consultant SEO',
     role: 'Propose les mots clés les plus pertinents avec une phrase dexemple pour le title et la meta description',
@@ -35,19 +35,14 @@ export const $agents = atom([
       'Génère des phrases dexemple avec les mots clés les plus pertinents',
   },
   {
-    id: Math.random().toString(),
+    id: '4',
     emoji: '🤠',
     title: 'Développeur Frontend',
     role: 'Génère le fichier JSX brut',
     response_format: 'code',
     temperature: 0.7,
-    desired_response: `Un composant react nommé **LandingPage** qui contient le code complet du composant avec les styles intégrées dans le composant.
-    Voici le début :
-      function LandingPage({...}) { ... }
-      render(<LandingPage />);
-
-    Je veux que le style soit fait en css pur / sans framework et que tout soit dans une balise style global comme ceci : 
-    <h1 style={{ padding: '8px', backgroundColor: 'grey' }}>Hello H1</h1>
+    desired_response: `Un composant react qui contient le code complet du composant avec les styles intégrées dans le composant.
+    Utilise cssInJs sans aucun framework. C'est important que la landing page soit avec du css intégré.
       `,
   },
 ])

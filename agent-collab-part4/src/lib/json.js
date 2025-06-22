@@ -1,7 +1,12 @@
 export function extractJSXString(text = '') {
   console.log('JSON FILE', text)
   text = text.replace(/<think>[\s\S]*?<\/think>/gi, '')
-  text = text.replace("import React from 'react';", '')
+  text = text.replace(/import .*;\s*/, '')
+  text = text.replaceAll('useEffect(', 'React.useEffect(')
+  text = text.replaceAll('useState(', 'React.useState(')
+  text = text.replaceAll('useRef(', 'React.useRef(')
+  text = text.replaceAll('useLayoutEffect(', 'React.useLayoutEffect(')
+  text = text.replaceAll('useCallback(', 'React.useCallback(')
 
   let compName
   text.replace(/export default (.*);/, (match, group) => {
