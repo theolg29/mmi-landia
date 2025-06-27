@@ -1,20 +1,23 @@
-import { GearIcon, MoonIcon, RocketIcon } from '@radix-ui/react-icons'
+import { GearIcon } from '@radix-ui/react-icons'
 import { Button, Flex } from '@radix-ui/themes'
 import { Link } from 'raviger'
 import { useState } from 'react'
+import { useStore } from '@nanostores/react'
+import { $showChat } from '@/store/chat'
 import { Config } from './Config'
 import { Notification } from './Notification'
 
 export function Header() {
   const [isConfigOpen, setIsConfigOpen] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
+  const showChat = useStore($showChat)
 
   const openConfig = () => {
     setIsConfigOpen(true)
   }
 
-  const closeConfig = () => {
-    setIsConfigOpen(false)
+  const handleConfigOpenChange = (open) => {
+    setIsConfigOpen(open)
   }
 
   const handleConfigSave = () => {
@@ -22,6 +25,10 @@ export function Header() {
     setTimeout(() => {
       setShowNotification(false)
     }, 3000)
+  }
+
+  const toggleChat = () => {
+    $showChat.set(!showChat)
   }
 
   return (
@@ -34,7 +41,9 @@ export function Header() {
           width='100%'
           margin='0 auto'
           px='5'>
-          <Flex gap='6'>
+          <Flex
+            gap='2'
+            align='center'>
             <Link href='/'>
               <p>LandIA</p>
             </Link>
@@ -45,6 +54,19 @@ export function Header() {
             align='center'
             direction='row'
             gap='5'>
+            <Button
+              variant='ghost'
+              size='4'
+              onClick={toggleChat}>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='22'
+                height='22'
+                fill='currentColor'
+                viewBox='0 0 16 16'>
+                <path d='M16 3a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-5-1v12H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 0h2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2z' />
+              </svg>
+            </Button>
             <Button
               variant='ghost'
               size='4'
@@ -60,7 +82,8 @@ export function Header() {
 
       {isConfigOpen && (
         <Config
-          onClose={closeConfig}
+          open={isConfigOpen}
+          onOpenChange={handleConfigOpenChange}
           onSave={handleConfigSave}
         />
       )}

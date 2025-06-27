@@ -16,7 +16,6 @@ function AgentList() {
   return (
     <Flex
       style={{
-        flexDirection: 'column',
         alignContent: 'flex-start',
         gap: 10,
         padding: 0,
@@ -44,8 +43,9 @@ function AgentList() {
             height: '100%',
           }}>
           <Flex
+            direction='column'
             gap='3'
-            align='center'>
+            align='start'>
             {agent.emoji}
             <Box>
               <Text

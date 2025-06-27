@@ -172,54 +172,6 @@ button:focus-visible {
   width: 100%;
 }
 
-/* Config popup styles */
-.config-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  backdrop-filter: blur(8px);
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 20;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-.config-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.95);
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  z-index: 21;
-  max-width: 500px;
-  width: 90vw;
-  max-height: 80vh;
-  overflow-y: auto;
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: configPopupIn 0.3s ease-out forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    visibility: visible;
-  }
-}
-
-@keyframes configPopupIn {
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
 /* Notification styles */
 .notification {
   position: fixed;

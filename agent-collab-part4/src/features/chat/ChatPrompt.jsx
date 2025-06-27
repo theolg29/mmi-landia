@@ -9,7 +9,7 @@ import {
   $objectif,
 } from '@/store/store'
 import { PaperPlaneIcon } from '@radix-ui/react-icons'
-import { Button, Flex, TextArea, Box } from '@radix-ui/themes'
+import { Button, Flex, TextArea } from '@radix-ui/themes'
 import { useRef, useState } from 'react'
 import { AgentMenu } from './AgentMenu'
 import { AgentSelect } from './AgentSelect'
@@ -17,6 +17,7 @@ import { useStore } from '@nanostores/react'
 import { isEmpty } from 'lodash'
 import { extractJSXString } from '@/lib/json'
 import { lpFewShots } from '@/utils/prompt'
+import { exportCanvasToBase64 } from '@/utils/excalidraw'
 
 function constructCtxArray(originalArray) {
   const result = []
@@ -28,13 +29,15 @@ function constructCtxArray(originalArray) {
 
 // Questions fréquentes
 const frequentQuestions = [
-  'Crée moi une fausse Landing Page',
-  'Donne moi du CSS dans le balise style={{ }}',
+  'Landing Page pour un produit technologique',
+  'Landing Page pour une application mobile',
+  'Landing Page pour un événement sportif',
 ]
 
-function ChatPrompt() {
+function ChatPrompt({ excalidrawRef }) {
   const promptRef = useRef(null)
   const containerRef = useRef(null)
+  const fileInputRef = useRef(null)
   const [isPromptEmpty, setIsPromptEmpty] = useState(true)
   const [isFocused, setIsFocused] = useState(false)
 
@@ -70,7 +73,13 @@ function ChatPrompt() {
     }
   }
 
+  const onFileButtonClick = () => {
+    fileInputRef.current?.click()
+  }
+
   const onSendPrompt = async () => {
+    console.log('EXCA REF', excalidrawRef)
+
     let prompt = promptRef.current.value
 
     // Surcharge prompt settings
@@ -116,6 +125,19 @@ function ChatPrompt() {
 
     //   }
 
+    // Prepare send image du canvas
+    const images = []
+    const imageURL = await exportCanvasToBase64({ excalidrawRef })
+    console.log('IMAGE URL', imageURL)
+    if (imageURL?.src) {
+      images.push({
+        type: 'image_url',
+        image_url: {
+          url: imageURL.src,
+        },
+      })
+    }
+
     // -----------------
     // Sélection d'agents
 
@@ -131,7 +153,7 @@ function ChatPrompt() {
       }
 
       // call agent
-      const stream = await onAgent({ prompt: prompt, agent, contextInputs })
+      const stream = await onAgent({ prompt: prompt, agent, contextInputs, images })
 
       //
       for await (const part of stream) {
@@ -245,7 +267,27 @@ function ChatPrompt() {
           <Flex
             justify='between'
             width='100%'>
-            <AgentMenu />
+            <Flex
+              align='center'
+              gap='2'>
+              <AgentMenu />
+              <input
+                ref={fileInputRef}
+                type='file'
+                style={{ display: 'none' }}
+              />
+              <Button onClick={onFileButtonClick}>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='16'
+                  height='16'
+                  fill='currentColor'
+                  className='bi bi-paperclip'
+                  viewBox='0 0 16 16'>
+                  <path d='M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0z' />
+                </svg>
+              </Button>
+            </Flex>
             <AgentSelect />
             <Button
               disabled={isPromptEmpty}

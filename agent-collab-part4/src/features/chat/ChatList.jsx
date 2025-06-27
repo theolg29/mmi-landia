@@ -1,28 +1,40 @@
 import { Markdown } from '@/components/Markdown'
-import { $messages } from '@/store/store'
+import { $messages, $agents } from '@/store/store'
 import { useStore } from '@nanostores/react'
-import { Box, Flex, Separator } from '@radix-ui/themes'
+import { Flex, Separator } from '@radix-ui/themes'
 import { useEffect, useRef } from 'react'
 
 function ChatList() {
   const messages = useStore($messages)
-  const messagesEndRef = useRef(null)
+  const agents = useStore($agents)
+  const containerRef = useRef(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (containerRef.current) {
+      const container = containerRef.current
+      container.scrollTop = container.scrollHeight
+    }
   }
 
   useEffect(() => {
     scrollToBottom()
   }, [messages])
 
+  const getAgentTitle = (agentId) => {
+    if (!agentId) return 'Assistant'
+    const agent = agents.find((a) => a.id === agentId)
+    return agent ? agent.title : 'Assistant'
+  }
+
   return (
     <Flex
+      ref={containerRef}
       direction='column'
       gap='3'
       style={{
         overflowY: 'auto',
         padding: '16px',
+        scrollBehavior: 'smooth',
       }}>
       {messages.map((msg) => (
         <Flex key={`message-${msg.id}`}>
@@ -41,7 +53,7 @@ function ChatList() {
                   marginBottom: '4px',
                   fontWeight: 'bold',
                 }}>
-                🤖 - Assitant
+                🤖 - {getAgentTitle(msg.agentId)}
               </Flex>
               <Separator size='4' />
               <Markdown content={msg.content || ''} />

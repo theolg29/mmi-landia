@@ -1,7 +1,7 @@
-import { Flex, RadioGroup, Separator, Text, Heading, Box } from '@radix-ui/themes'
+import { Flex, RadioGroup, Separator, Text, Box } from '@radix-ui/themes'
 import { useStore } from '@nanostores/react'
 import { $settings, setUserSettings } from '@/store/store'
-import { LoopIcon, PlusIcon } from '@radix-ui/react-icons'
+import { PlusIcon } from '@radix-ui/react-icons'
 
 function Settings() {
   const settings = useStore($settings)
@@ -39,7 +39,7 @@ function Settings() {
                     size='2'>
                     <RadioGroup.Item
                       name='theme'
-                      value={choice.value}
+                      value={choice.title}
                       defaultChecked
                     />
                     {choice.title}

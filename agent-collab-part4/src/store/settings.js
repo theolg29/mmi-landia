@@ -8,9 +8,9 @@ export const $settings = atom({
   theme: {
     title: 'Thème',
     choices: [
-      { value: 'Startup Tech', title: 'Startup Tech' },
-      { value: 'Minimaliste', title: 'Minimaliste' },
-      { value: '3', title: 'Minimaliste' },
+      { value: '1', title: 'Startup Tech' },
+      { value: '2', title: 'Minimaliste' },
+      { value: '3', title: 'Autres' },
     ],
   },
   layout: {
@@ -33,15 +33,15 @@ export const $settings = atom({
 
 export const setUserSettings = (category, value) => {
   switch (category) {
-    case 'Thème':
+    case 'theme':
       $theme.set(value)
       break
 
-    case 'Layout':
+    case 'layout':
       $layout.set(value)
       break
 
-    case 'Objectifs':
+    case 'objectif':
       $objectif.set(value)
       break
 

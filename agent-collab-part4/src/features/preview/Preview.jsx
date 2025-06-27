@@ -1,16 +1,16 @@
-import { Box, Flex, Separator, Skeleton } from '@radix-ui/themes'
+import { Box, Flex, Skeleton, Tabs, Button } from '@radix-ui/themes'
 import { useStore } from '@nanostores/react'
 import { $messages } from '@/store/store'
 import { $agents } from '@/store/agents'
 import { useState, useEffect } from 'react'
-import ChatPrompt from '../chat/ChatPrompt'
-import { Markdown } from '@/components/Markdown'
 import { LiveProvider, LiveEditor, LivePreview, LiveError } from 'react-live'
+import Exca from '@/components/Exca'
 
-function Preview() {
+function Preview({ excalidrawRef }) {
   const messages = useStore($messages)
   const agents = useStore($agents)
   const [secondes, setSecondes] = useState(0)
+  // const excalidrawRef = useRef(null)
 
   const isFromFrontendDeveloper = (msg) => {
     const agent = agents.find((agent) => agent.id === msg.agentId)
@@ -34,6 +34,54 @@ function Preview() {
 
   return (
     <Flex direction='column'>
+      <Flex>
+        <Tabs.Root
+          defaultValue='canvas'
+          style={{ width: '100%' }}>
+          <Tabs.List>
+            <Tabs.Trigger value='canvas'>Canvas</Tabs.Trigger>
+            <Tabs.Trigger value='code'>Code</Tabs.Trigger>
+            <Tabs.Trigger value='preview'>Preview</Tabs.Trigger>
+          </Tabs.List>
+
+          <Box pt='3'>
+            <Tabs.Content value='canvas'>
+              <Box>
+                <Exca ref={excalidrawRef} />
+              </Box>
+            </Tabs.Content>
+
+            <Tabs.Content value='code'>
+              {messages.map((msg) => (
+                <Box key={msg.id}>
+                  {isFromFrontendDeveloper(msg) && msg.completed && (
+                    <LiveProvider
+                      code={msg.content}
+                      noInline>
+                      <LiveEditor />
+                      <LiveError />
+                    </LiveProvider>
+                  )}
+                </Box>
+              ))}
+            </Tabs.Content>
+
+            <Tabs.Content value='preview'>
+              {messages.map((msg) => (
+                <Box key={msg.id}>
+                  {isFromFrontendDeveloper(msg) && msg.completed && (
+                    <LiveProvider
+                      code={msg.content}
+                      noInline>
+                      <LivePreview />
+                    </LiveProvider>
+                  )}
+                </Box>
+              ))}
+            </Tabs.Content>
+          </Box>
+        </Tabs.Root>
+      </Flex>
       <Box>
         {messages.length !== 0 && !hasCompletedFrontendMessage && (
           <>
@@ -44,49 +92,10 @@ function Preview() {
               <div class='loader'></div>
               <p>En réflexion {secondes}s...</p>
             </Flex>
-
-            <Skeleton
-              height='40px'
-              style={{ marginBottom: '8px' }}
-            />
-            <Skeleton height='500px' />
+            <Skeleton height='400px' />
           </>
         )}
       </Box>
-
-      <Flex
-        direction='column'
-        gap='2'>
-        {messages.map((msg) => (
-          <Flex key={msg.id}>
-            {isFromFrontendDeveloper(msg) && (
-              <Flex direction='column'>
-                {/* <Markdown content={msg.content} /> */}
-                <LiveProvider
-                  code={msg.content}
-                  noInline>
-                  <Flex direction='column'>
-                    <Box>
-                      <h4>Code</h4>
-                      <Separator
-                        size='4'
-                        style={{ marginBottom: '18px' }}
-                      />
-                      {msg.completed && <LiveEditor />}
-                    </Box>
-                    <Box style={{ marginTop: '18px' }}>
-                      <h4>Prévisualisation</h4>
-                      <Separator size='4' />
-                      {msg.completed && <LivePreview />}
-                    </Box>
-                    {msg.completed && <LiveError />}
-                  </Flex>
-                </LiveProvider>
-              </Flex>
-            )}
-          </Flex>
-        ))}
-      </Flex>
     </Flex>
   )
 }

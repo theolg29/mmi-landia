@@ -31,6 +31,7 @@ export const onAgent = async function ({
   prompt,
   canStream = true,
   canThink = false,
+  images = [],
   contextInputs = [],
 }) {
   const aiClient = await getAIClient()
@@ -41,7 +42,6 @@ export const onAgent = async function ({
 
   console.log('onAgent agent', agent)
   console.log('onAgent prompt', prompt)
-
 
   agent.role = `${agent.role}
                 Respond in the same language of the user.
@@ -72,6 +72,7 @@ export const onAgent = async function ({
         {
           role: 'user',
           content: [
+            ...images,
             {
               type: 'text',
               text: prompt,
